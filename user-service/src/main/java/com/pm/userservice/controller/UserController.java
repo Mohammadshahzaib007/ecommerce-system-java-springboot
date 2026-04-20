@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
@@ -32,5 +33,11 @@ public class UserController {
     @Operation(summary = "Get all users", description = "Get all the users")
     public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
         return ResponseEntity.ok().body(userService.findAllUsers());
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get a user by id", description = "Get a user details by id")
+    public ResponseEntity<UserResponseDTO> findUserById(@RequestParam(value = "id") UUID id) {
+        return ResponseEntity.ok().body(userService.findUserById(id));
     }
 }

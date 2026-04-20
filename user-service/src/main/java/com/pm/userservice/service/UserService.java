@@ -4,6 +4,7 @@ import com.pm.userservice.dto.UserRequestDTO;
 import com.pm.userservice.dto.UserResponseDTO;
 import com.pm.userservice.exception.EmailAlreadyExistsException;
 import com.pm.userservice.exception.RoleDoesNotExistException;
+import com.pm.userservice.exception.UserWithThisIdDoesNotExistsException;
 import com.pm.userservice.mapper.UserMapper;
 import com.pm.userservice.model.Role;
 import com.pm.userservice.model.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -65,5 +67,14 @@ public class UserService {
         log.info("Finding all users");
         List<User> users = userRepository.findAll();
         return users.stream().map(UserMapper::toResponseDTO).toList();
+    }
+
+    public UserResponseDTO findUserById(UUID id) {
+        log.info("Fetching user by id");
+
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserWithThisIdDoesNotExistsException("User with this id does not exist " + id));
+
+        return UserMapper.toResponseDTO(user);
     }
 }

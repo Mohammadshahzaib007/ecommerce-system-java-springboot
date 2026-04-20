@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UserRequestDTO {
-    @Size(min=2, max=50)
+    @Size(min = 2, max = 50)
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -19,7 +19,7 @@ public class UserRequestDTO {
     @Size(min = 3, message = "Password must be at least 3 characters")
     private String password;
 
-    @NotBlank(message = "Role is required")
+    @NotNull(message = "Role is required")
     private RoleType role;
 
     public String getName() {

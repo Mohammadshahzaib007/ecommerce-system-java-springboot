@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> emailAlreadyExistsException(EmailAlreadyExistsException ex) {
         Map<String, String> errors = new HashMap<>();
-        log.info(ex.getMessage());
+        log.warn(ex.getMessage());
         errors.put("message", ex.getMessage());
         return ResponseEntity.badRequest().body(errors);
     }
@@ -95,9 +95,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserWithThisIdDoesNotExistsException.class)
     public ResponseEntity<Map<String, String>> userWithThisIdDoesNotExistsException(
             UserWithThisIdDoesNotExistsException ex) {
-        log.info(ex.getMessage());
+        log.warn(ex.getMessage());
         Map<String, String> errors = new HashMap<>();
         errors.put("message", ex.getMessage());
-        return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
 }

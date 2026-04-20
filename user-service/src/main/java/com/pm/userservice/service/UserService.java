@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class UserService {
@@ -57,5 +59,11 @@ public class UserService {
         log.info("User created with id: {}", savedUser.getId());
 
         return UserMapper.toResponseDTO(savedUser);
+    }
+
+    public List<UserResponseDTO> findAllUsers() {
+        log.info("Finding all users");
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserMapper::toResponseDTO).toList();
     }
 }

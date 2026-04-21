@@ -30,6 +30,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
+    // Add pagination
     @GetMapping
     @Operation(summary = "Get all users")
     public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
@@ -40,5 +41,12 @@ public class UserController {
     @Operation(summary = "Get a user by id")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable UUID id) {
         return ResponseEntity.ok().body(userService.findUserById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user by id")
+    public ResponseEntity<Void> deleteUserById(@PathVariable UUID id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
     }
 }

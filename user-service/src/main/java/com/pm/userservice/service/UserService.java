@@ -77,4 +77,13 @@ public class UserService {
 
         return UserMapper.toResponseDTO(user);
     }
+
+    @Transactional
+    public void deleteUserById(UUID id) {
+        log.info("Deleting user by id");
+        if (!userRepository.existsById(id)) {
+            throw new UserWithThisIdDoesNotExistsException("User with this id does not exist " + id);
+        }
+        userRepository.deleteById(id);
+    }
 }

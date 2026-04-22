@@ -100,4 +100,11 @@ public class GlobalExceptionHandler {
         errors.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
+
+    @ExceptionHandler(NoFieldsToUpdateException.class)
+    public ResponseEntity<Map<String, String>> handleNoFieldsToUpdateException(NoFieldsToUpdateException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

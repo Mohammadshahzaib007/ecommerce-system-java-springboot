@@ -4,6 +4,7 @@ import com.pm.userservice.dto.UserRequestDTO;
 import com.pm.userservice.dto.UserResponseDTO;
 import com.pm.userservice.dto.UserUpdateRequestDTO;
 import com.pm.userservice.exception.EmailAlreadyExistsException;
+import com.pm.userservice.exception.NoFieldsToUpdateException;
 import com.pm.userservice.exception.RoleDoesNotExistException;
 import com.pm.userservice.exception.UserWithThisIdDoesNotExistsException;
 import com.pm.userservice.mapper.UserMapper;
@@ -90,6 +91,10 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO updateUser(UUID id, UserUpdateRequestDTO userUpdateRequestDTO) {
+        if (userUpdateRequestDTO.getName() == null && userUpdateRequestDTO.getEmail() == null && userUpdateRequestDTO.getRole() == null) {
+            throw new NoFieldsToUpdateException("At least one field must be provided");
+        }
+
         log.info("Updating user by id");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserWithThisIdDoesNotExistsException("User not found"));

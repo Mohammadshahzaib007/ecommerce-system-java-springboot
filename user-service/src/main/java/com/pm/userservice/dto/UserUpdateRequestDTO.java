@@ -8,7 +8,7 @@ public class UserUpdateRequestDTO {
     @Size(min = 2, max = 50)
     private String name;
 
-    @Email
+    @Email(message = "Email should be a valid email")
     private String email;
 
     private RoleType role;

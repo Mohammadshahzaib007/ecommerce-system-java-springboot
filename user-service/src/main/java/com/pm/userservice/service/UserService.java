@@ -2,6 +2,7 @@ package com.pm.userservice.service;
 
 import com.pm.userservice.dto.UserRequestDTO;
 import com.pm.userservice.dto.UserResponseDTO;
+import com.pm.userservice.dto.UserUpdateRequestDTO;
 import com.pm.userservice.exception.EmailAlreadyExistsException;
 import com.pm.userservice.exception.RoleDoesNotExistException;
 import com.pm.userservice.exception.UserWithThisIdDoesNotExistsException;
@@ -85,5 +86,54 @@ public class UserService {
             throw new UserWithThisIdDoesNotExistsException("User with this id does not exist " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public UserResponseDTO updateUser(UUID id, UserUpdateRequestDTO userUpdateRequestDTO) {
+        log.info("Updating user by id");
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserWithThisIdDoesNotExistsException("User not found"));
+
+        if (userUpdateRequestDTO.getEmail() != null && userRepository.existsByEmailAndIdNot(userUpdateRequestDTO.getEmail(), id)) {
+            throw new EmailAlreadyExistsException("Email already in use");
+        }
+
+        if (userUpdateRequestDTO.getName() != null) user.setName(userUpdateRequestDTO.getName());
+        if (userUpdateRequestDTO.getEmail() != null) user.setEmail(userUpdateRequestDTO.getEmail());
+
+        if (userUpdateRequestDTO.getRole() != null) {
+            Role role = roleRepository.findByRole(userUpdateRequestDTO.getRole())
+                    .orElseThrow(() -> new RoleDoesNotExistException("Role not found"));
+            user.setRole(role);
+        }
+
+        return UserMapper.toResponseDTO(userRepository.save(user));
+//        if (userRepository.existsByEmail(userRequestDTO.getEmail())) {
+//            throw new EmailAlreadyExistsException(
+//                    "User with email " + userRequestDTO.getEmail() + " already exists"
+//            );
+//        }
+//
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new UserWithThisIdDoesNotExistsException(
+//                        "User with this id does not exist " + id
+//                ));
+//
+//        Role role = null;
+//        if (userRequestDTO.getRole() != null) {
+//            role = roleRepository.findByRole(userRequestDTO.getRole())
+//                    .orElseThrow(() -> new RoleDoesNotExistException(
+//                            "This role " + userRequestDTO.getRole() + " does not exist"
+//                    ));
+//        }
+//
+//
+//        user.setName(userRequestDTO.getName());
+//        user.setEmail(userRequestDTO.getEmail());
+//        if (role != null) {
+//            user.setRole(role);
+//        }
+//
+//        return UserMapper.toResponseDTO(userRepository.save(user));
     }
 }

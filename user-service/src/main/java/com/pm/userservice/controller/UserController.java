@@ -2,6 +2,7 @@ package com.pm.userservice.controller;
 
 import com.pm.userservice.dto.UserRequestDTO;
 import com.pm.userservice.dto.UserResponseDTO;
+import com.pm.userservice.dto.UserUpdateRequestDTO;
 import com.pm.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,5 +49,14 @@ public class UserController {
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID id) {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user by id")
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable UUID id,
+            @Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        UserResponseDTO userResponseDTO = userService.updateUser(id, userUpdateRequestDTO);
+        return ResponseEntity.ok(userResponseDTO);
     }
 }

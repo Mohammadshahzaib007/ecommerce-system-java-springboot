@@ -14,6 +14,9 @@ import com.pm.userservice.repository.RoleRepository;
 import com.pm.userservice.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,10 +68,11 @@ public class UserService {
         return UserMapper.toResponseDTO(savedUser);
     }
 
-    public List<UserResponseDTO> findAllUsers() {
+    public Page<UserResponseDTO> findAllUsers(int page, int size) {
         log.info("Finding all users");
-        List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::toResponseDTO).toList();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(UserMapper::toResponseDTO);
     }
 
     public UserResponseDTO findUserById(UUID id) {

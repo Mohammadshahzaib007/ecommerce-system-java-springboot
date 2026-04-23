@@ -1,5 +1,6 @@
 package com.pm.userservice.controller;
 
+import com.pm.userservice.dto.common.PagedResponse;
 import com.pm.userservice.dto.UserRequestDTO;
 import com.pm.userservice.dto.UserResponseDTO;
 import com.pm.userservice.dto.UserUpdateRequestDTO;
@@ -7,11 +8,11 @@ import com.pm.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,8 +35,10 @@ public class UserController {
     // Add pagination
     @GetMapping
     @Operation(summary = "Get all users")
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
-        return ResponseEntity.ok().body(userService.findAllUsers());
+    public ResponseEntity<PagedResponse<UserResponseDTO>> findAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        Page<UserResponseDTO> users = userService.findAllUsers(page, size);
+        return ResponseEntity.ok().body(new PagedResponse<>(users));
     }
 
     @GetMapping("/{id}")

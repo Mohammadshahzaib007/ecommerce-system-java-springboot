@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -70,7 +70,11 @@ public class UserService {
 
     public Page<UserResponseDTO> findAllUsers(int page, int size) {
         log.info("Finding all users");
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("createdAt").descending()
+        );
         Page<User> usersPage = userRepository.findAll(pageable);
         return usersPage.map(UserMapper::toResponseDTO);
     }
